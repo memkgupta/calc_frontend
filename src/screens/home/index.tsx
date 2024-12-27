@@ -19,8 +19,8 @@ interface Response {
 export default function Home() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isDrawing, setIsDrawing] = useState(false);
-    const [color, setColor] = useState('rgb(0, 0, 0)');
-    const [eraserColor, setEraserColor] = useState('bg-black');
+    const [color, setColor] = useState('rgb(255, 255, 255)');
+    const [eraserColor, setEraserColor] = useState('bg-gray-500');
     const [reset, setReset] = useState(false);
     const [dictOfVars, setDictOfVars] = useState({});
     const [result, setResult] = useState<GeneratedResult>();
@@ -30,7 +30,7 @@ export default function Home() {
     useEffect(() => {
         if (latexExpression.length > 0 && window.MathJax) {
             setTimeout(() => {
-                window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
+                window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub]);
             }, 0);
         }
     });
@@ -61,10 +61,13 @@ export default function Home() {
                 canvas.height = window.innerHeight - canvas.offsetTop;
                 ctx.lineCap = 'round';
                 ctx.lineWidth = 3;
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
         }
         const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML';
+        script.src =
+            'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML';
         script.async = true;
         document.head.appendChild(script);
 
@@ -97,7 +100,8 @@ export default function Home() {
         if (canvas) {
             const ctx = canvas.getContext('2d');
             if (ctx) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
         }
     };
@@ -105,7 +109,6 @@ export default function Home() {
     const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
         const canvas = canvasRef.current;
         if (canvas) {
-            canvas.style.background = 'white';
             const ctx = canvas.getContext('2d');
             if (ctx) {
                 ctx.beginPath();
@@ -196,9 +199,9 @@ export default function Home() {
             <div className="grid grid-cols-3 gap-2 justify-items-center items-center pt-3">
                 <Button
                     onClick={() => {
-                        setReset(true)
-                        setEraserColor('bg-black')
-                        setColor('rgb(0, 0, 0)')
+                        setReset(true);
+                        setEraserColor('bg-gray-500');
+                        setColor('rgb(255, 255, 255)');
                     }}
                     className="z-20 bg-red-500 text-white w-36"
                     variant="default"
@@ -207,17 +210,21 @@ export default function Home() {
                     Reset
                 </Button>
                 <Group className="z-20">
-                    {SWATCHES.filter((swatch) => swatch !== '#ffffff').map((swatch) => (
-                        <ColorSwatch key={swatch} color={swatch} onClick={() => {
-                            setColor(swatch)
-                            setEraserColor('bg-black')
-                        }} />
+                    {SWATCHES.filter((swatch) => swatch !== '#000000').map((swatch) => (
+                        <ColorSwatch
+                            key={swatch}
+                            color={swatch}
+                            onClick={() => {
+                                setColor(swatch);
+                                setEraserColor('bg-gray-500');
+                            }}
+                        />
                     ))}
                 </Group>
                 <Button
                     onClick={() => {
-                        setColor('rgb(255, 255, 255)')
-                        setEraserColor('bg-gray-500')
+                        setColor('rgb(0, 0, 0)');
+                        setEraserColor('bg-black');
                     }}
                     className={`z-20 ${eraserColor} text-white w-36`}
                     variant="default"

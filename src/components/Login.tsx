@@ -1,26 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { TextInput, PasswordInput, Button, Paper, Title, Text } from "@mantine/core";
+import axios from "axios";
+import { BACKEND_URL } from "@/constants";
+import Cookies from "js-cookie";
 
 const LoginForm = () => {
-    const { login } = useAuth();
+    const { user,setUser } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
-
+const login = async(email:string,password:string)=>{
+try {
+    const res = await axios.post(`${BACKEND_URL}/user/login`,{email,password},);
+    setUser({name:res.data.name,email:res.data.email,id:res.data.id})
+    Cookies.set('token',res.data.token);
+} catch (error) {
+    console.error(error);
+    throw new Error("Login failed")
+}
+}
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
         try {
             await login(email, password);
+            // console.log()
             navigate("/"); // Redirect to the canvas
         } catch {
             setError("Invalid credentials. Please try again.");
         }
     };
-
+useEffect(()=>{
+    if(user){
+        navigate("/");
+    }
+},[user])
     return (
         <div
             style={{

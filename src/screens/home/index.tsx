@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Draggable from 'react-draggable';
 import { SWATCHES } from '@/constants';
+import Cookies from 'js-cookie';
 
 interface GeneratedResult {
     expression: string;
@@ -26,7 +27,7 @@ export default function Home() {
     const [result, setResult] = useState<GeneratedResult>();
     const [latexPosition, setLatexPosition] = useState({ x: 10, y: 200 });
     const [latexExpression, setLatexExpression] = useState<Array<string>>([]);
-
+const cookie = Cookies.get('token');
     useEffect(() => {
         if (latexExpression.length > 0 && window.MathJax) {
             setTimeout(() => {
@@ -87,7 +88,9 @@ export default function Home() {
         setLatexExpression([...latexExpression, latex]);
 
         const canvas = canvasRef.current;
+        
         if (canvas) {
+            canvas!.style.background = 'black'
             const ctx = canvas.getContext('2d');
             if (ctx) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -143,11 +146,14 @@ export default function Home() {
         if (canvas) {
             const response = await axios({
                 method: 'post',
-                url: `${import.meta.env.VITE_API_URL}/calculate`,
+                url: `http://localhost:8000/api/v1/ai/calculate`,
                 data: {
                     image: canvas.toDataURL('image/png'),
-                    dict_of_vars: dictOfVars,
+                    dict: dictOfVars,
                 },
+                headers:{
+                    Authorization:`Bearer ${cookie}`
+                }
             });
 
             const resp = await response.data;

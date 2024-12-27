@@ -1,28 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { TextInput, PasswordInput, Button, Paper, Title, Text } from "@mantine/core";
 
+import axios from "axios";
+import { BACKEND_URL } from "@/constants";
+
 const SignupForm = () => {
-    const { signup } = useAuth();
+    const { user } = useAuth();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
-
+    const signup = async(email:string,password:string,name:string)=>{
+        try {
+           await axios.post(`${BACKEND_URL}/user/signup`,{email,password,name},);
+            // Cookies.set('token',res.data.token);
+        } catch (error) {
+            console.error(error);
+            throw new Error("Signup failed")
+        }
+        }
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
         try {
-            await signup(name, email, password);
+            await signup( email, password,name);
             alert("Signup successful!");
             navigate("/"); // Redirect to canvas after successful signup
         } catch {
             setError("Signup failed. Please try again.");
         }
     };
-
+useEffect(()=>{
+    if(user){
+        navigate("/")
+    }
+},[user])
     return (
         <div
             style={{

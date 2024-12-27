@@ -12,5 +12,5 @@ const SWATCHES = [
     "#fab005",  // yellow
     "#fd7e14",  // orange
 ];
-  
-export { SWATCHES };
+const BACKEND_URL = "http://localhost:8000/api/v1"
+export { SWATCHES,BACKEND_URL };

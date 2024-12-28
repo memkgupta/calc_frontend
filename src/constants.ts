@@ -12,5 +12,5 @@ const SWATCHES = [
     "#fab005",  // yellow
     "#fd7e14",  // orange
 ];
-const BACKEND_URL = "https://ai-calc-backend-qfgt.onrender.com/api/v1"
+const BACKEND_URL = "https://ai-calc-backend-1.onrender.com/api/v1";
 export { SWATCHES,BACKEND_URL };

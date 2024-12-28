@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Draggable from 'react-draggable';
-import { SWATCHES } from '@/constants';
+import { BACKEND_URL, SWATCHES } from '@/constants';
 import Cookies from 'js-cookie';
 
 interface GeneratedResult {
@@ -146,7 +146,7 @@ const cookie = Cookies.get('token');
         if (canvas) {
             const response = await axios({
                 method: 'post',
-                url: `http://localhost:8000/api/v1/ai/calculate`,
+                url: `${BACKEND_URL}/ai/calculate`,
                 data: {
                     image: canvas.toDataURL('image/png'),
                     dict: dictOfVars,
@@ -262,7 +262,7 @@ const cookie = Cookies.get('token');
                     <Draggable
                         key={index}
                         defaultPosition={latexPosition}
-                        onStop={(e, data) => setLatexPosition({ x: data.x, y: data.y })}
+                        onStop={( data:any) => setLatexPosition({ x: data.x, y: data.y })}
                     >
                         <div className="absolute p-2 text-white rounded shadow-md">
                             <div className="latex-content">{latex}</div>
